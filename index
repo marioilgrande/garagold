@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Calcolatore Provvigioni - Regole Aggiornate</title>
+  <style>
+    /* Stili per un aspetto professionale e pulito */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .offer-block {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .offer-block h2 {
+      background-color: #007BFF;
+      color: #fff;
+      padding: 8px;
+      border-radius: 4px;
+      margin: -15px -15px 15px -15px;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      color: #333;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .note {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+      font-style: italic;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 15px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .result {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calcolatore Provvigioni</h1>
+    
+    <!-- Blocco Residenziale -->
+    <div class="offer-block" id="residenzialeBlock">
+      <h2>RESIDENZIALE</h2>
+      <label>Numero di Contratti:
+        <input type="number" id="quantity_res" value="0" min="0">
+      </label>
+    </div>
+    
+    <!-- Blocco Business -->
+    <div class="offer-block" id="businessBlock">
+      <h2>BUSINESS</h2>
+      <label>Numero di Contratti:
+        <input type="number" id="quantity_bus" value="0" min="0">
+      </label>
+    </div>
+    
+    <!-- Blocco Plus Residenziale -->
+    <div class="offer-block" id="plusResBlock">
+      <h2>PLUS RESIDENZIALE</h2>
+      <label>Numero di Contratti:
+        <input type="number" id="quantity_plusRes" value="0" min="0">
+      </label>
+    </div>
+    
+    <!-- Blocco Plus Business -->
+    <div class="offer-block" id="plusBusBlock">
+      <h2>PLUS BUSINESS</h2>
+      <label>Numero di Contratti:
+        <input type="number" id="quantity_plusBus" value="0" min="0">
+      </label>
+    </div>
+    
+    <!-- Blocco VAS COMPLESSO -->
+    <div class="offer-block" id="vasComplessoBlock">
+      <h2>VAS COMPLESSO</h2>
+      <label>Numero di segnalazioni VAS COMPLESSO:
+        <input type="number" id="vas_complesso" value="0" min="0">
+      </label>
+      <p class="note">
+        È possibile guadagnare ulteriori 2€ per ogni cliente segnalato per VAS COMPLESSO, che diventano 5€ nel caso in cui le segnalazioni siano superiori o uguali a 10. Non è necessario che il cliente segnalato per il VAS COMPLESSO sia un cliente in fornitura A2A. (vedi lettera di gara o contatta il tuo referente)
+      </p>
+    </div>
+    
+    <!-- Nota informativa sui contratti -->
+    <p class="note">
+      Il totale è calcolato tenendo conto che tutti i contratti siano inseriti con RID e BOLLETTA WEB. In caso contrario ci sarà una decurtazione (vedi lettera di gara).
+    </p>
+    
+    <!-- Pulsante per il calcolo -->
+    <button type="button" onclick="calculateTotal()">Calcola Totale</button>
+    
+    <!-- Visualizzazione del risultato -->
+    <div class="result" id="result">Totale Provvigione: 0€</div>
+  </div>
+  
+  <script>
+    function calculateTotal() {
+      // Leggi i numeri di contratti per ciascuna tipologia
+      var quantityRes = parseInt(document.getElementById("quantity_res").value) || 0;
+      var quantityBus = parseInt(document.getElementById("quantity_bus").value) || 0;
+      var quantityPlusRes = parseInt(document.getElementById("quantity_plusRes").value) || 0;
+      var quantityPlusBus = parseInt(document.getElementById("quantity_plusBus").value) || 0;
+      
+      // Leggi il numero di segnalazioni VAS COMPLESSO
+      var vasComplessoCount = parseInt(document.getElementById("vas_complesso").value) || 0;
+      
+      // Totale dei contratti e totale dei contratti PLUS
+      var totalContracts = quantityRes + quantityBus + quantityPlusRes + quantityPlusBus;
+      var totalPlusContracts = quantityPlusRes + quantityPlusBus;
+      
+      // Definizione delle commissioni base (valori derivati dalle tabelle)
+      var baseRes = 62;       // Residenziale: 30+10+10+10+2
+      var baseBus = 92;       // Business: 60+10+10+10+2
+      var basePlusRes = 117;  // Plus Residenziale: 55+20+10+30+2
+      var basePlusBus = 147;  // Plus Business: 85+20+10+30+2
+      
+      // Se il totale dei contratti PLUS è >= 50, aggiungi 30€ per ciascun contratto PLUS
+      if (totalPlusContracts >= 50) {
+        basePlusRes += 30;  // Diventa 147
+        basePlusBus += 30;  // Diventa 177
+      }
+      
+      // Calcola la commissione per ciascun blocco (base * numero di contratti)
+      var commissionRes = baseRes * quantityRes;
+      var commissionBus = baseBus * quantityBus;
+      var commissionPlusRes = basePlusRes * quantityPlusRes;
+      var commissionPlusBus = basePlusBus * quantityPlusBus;
+      
+      // Se il numero totale dei contratti è inferiore a 6, applica le penalità:
+      // 10€ per ciascun contratto RESIDENZIALE e BUSINESS, 30€ per ciascun contratto PLUS
+      if (totalContracts < 6) {
+        commissionRes -= 10 * quantityRes;
+        commissionBus -= 10 * quantityBus;
+        commissionPlusRes -= 30 * quantityPlusRes;
+        commissionPlusBus -= 30 * quantityPlusBus;
+      }
+      
+      // Calcola il bonus per VAS COMPLESSO:
+      // 2€ per segnalazione se < 10, 5€ per segnalazione se >= 10
+      var bonusVAS = (vasComplessoCount >= 10) ? vasComplessoCount * 5 : vasComplessoCount * 2;
+      
+      var totalCommission = commissionRes + commissionBus + commissionPlusRes + commissionPlusBus + bonusVAS;
+      
+      document.getElementById("result").innerHTML = "Totale Provvigione: " + totalCommission.toFixed(2) + "€";
+    }
+  </script>
+</body>
+</html>

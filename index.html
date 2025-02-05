@@ -2,30 +2,36 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Calcolatore Provvigioni - Regole Aggiornate</title>
+  <!-- Meta tag per garantire il corretto scaling sui dispositivi mobili -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calcolatore Provvigioni - Mobile Friendly</title>
   <style>
-    /* Stili per un aspetto professionale e pulito */
+    /* Stili generali per una visualizzazione ottimale su smartphone */
     body {
       font-family: Arial, sans-serif;
       background-color: #f7f7f7;
       margin: 0;
-      padding: 20px;
+      padding: 10px;
+      font-size: 16px;
+      line-height: 1.4;
     }
     .container {
-      max-width: 800px;
+      max-width: 100%;
       margin: auto;
       background: #fff;
-      padding: 20px;
+      padding: 15px;
       border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
     h1 {
       text-align: center;
       color: #333;
+      font-size: 1.8em;
+      margin: 0.5em 0;
     }
     .offer-block {
       border: 1px solid #ccc;
-      padding: 15px;
+      padding: 10px;
       margin-bottom: 15px;
       border-radius: 5px;
       background-color: #f9f9f9;
@@ -35,13 +41,15 @@
       color: #fff;
       padding: 8px;
       border-radius: 4px;
-      margin: -15px -15px 15px -15px;
+      margin: -10px -10px 10px -10px;
       text-align: center;
+      font-size: 1.2em;
     }
     label {
       display: block;
       margin-top: 10px;
       color: #333;
+      font-size: 1em;
     }
     input[type="number"] {
       width: 100%;
@@ -50,23 +58,25 @@
       box-sizing: border-box;
       border: 1px solid #ccc;
       border-radius: 4px;
+      font-size: 1.2em;  /* Numeri leggibili */
     }
     .note {
-      margin-top: 20px;
-      font-size: 14px;
+      margin-top: 15px;
+      font-size: 0.9em;
       color: #555;
       text-align: center;
       font-style: italic;
     }
     button {
+      width: 100%;
       margin-top: 20px;
-      padding: 10px 15px;
+      padding: 12px;
       background-color: #28a745;
       color: #fff;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 1.2em;
     }
     button:hover {
       background-color: #218838;
@@ -74,7 +84,7 @@
     .result {
       margin-top: 20px;
       text-align: center;
-      font-size: 20px;
+      font-size: 1.2em;
       font-weight: bold;
       color: #333;
     }
@@ -141,26 +151,26 @@
   
   <script>
     function calculateTotal() {
-      // Leggi i numeri di contratti per ciascuna tipologia
+      // Legge i numeri di contratti per ciascuna tipologia
       var quantityRes = parseInt(document.getElementById("quantity_res").value) || 0;
       var quantityBus = parseInt(document.getElementById("quantity_bus").value) || 0;
       var quantityPlusRes = parseInt(document.getElementById("quantity_plusRes").value) || 0;
       var quantityPlusBus = parseInt(document.getElementById("quantity_plusBus").value) || 0;
       
-      // Leggi il numero di segnalazioni VAS COMPLESSO
+      // Legge il numero di segnalazioni VAS COMPLESSO
       var vasComplessoCount = parseInt(document.getElementById("vas_complesso").value) || 0;
       
-      // Totale dei contratti e totale dei contratti PLUS
+      // Totali dei contratti e dei contratti PLUS
       var totalContracts = quantityRes + quantityBus + quantityPlusRes + quantityPlusBus;
       var totalPlusContracts = quantityPlusRes + quantityPlusBus;
       
-      // Definizione delle commissioni base (valori derivati dalle tabelle)
+      // Commissioni base (valori derivati dalle tabelle)
       var baseRes = 62;       // Residenziale: 30+10+10+10+2
       var baseBus = 92;       // Business: 60+10+10+10+2
       var basePlusRes = 117;  // Plus Residenziale: 55+20+10+30+2
       var basePlusBus = 147;  // Plus Business: 85+20+10+30+2
       
-      // Se il totale dei contratti PLUS è >= 50, aggiungi 30€ per ciascun contratto PLUS
+      // Se il totale dei contratti PLUS è ≥ 50, aggiunge 30€ per ciascun contratto PLUS
       if (totalPlusContracts >= 50) {
         basePlusRes += 30;  // Diventa 147
         basePlusBus += 30;  // Diventa 177
@@ -182,7 +192,7 @@
       }
       
       // Calcola il bonus per VAS COMPLESSO:
-      // 2€ per segnalazione se < 10, 5€ per segnalazione se >= 10
+      // 2€ per segnalazione se il numero di segnalazioni è < 10, altrimenti 5€ per segnalazione
       var bonusVAS = (vasComplessoCount >= 10) ? vasComplessoCount * 5 : vasComplessoCount * 2;
       
       var totalCommission = commissionRes + commissionBus + commissionPlusRes + commissionPlusBus + bonusVAS;
@@ -192,3 +202,4 @@
   </script>
 </body>
 </html>
+

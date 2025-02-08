@@ -2,73 +2,82 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <!-- Per la visualizzazione mobile -->
+  <!-- Impostazioni per la visualizzazione mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calcolatore Provvigioni & Copertura Spese</title>
   <style>
+    /* Impedisce il ridimensionamento automatico del testo su mobile */
+    html {
+      -webkit-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    
     /* Stili generali */
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       background-color: #f7f7f7;
       margin: 0;
       padding: 10px;
-      font-size: 16px;
       line-height: 1.5;
+      color: #333;
     }
     .container {
+      width: 100%;
       max-width: 800px;
       margin: 20px auto;
       background: #fff;
       padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     h1 {
       text-align: center;
-      color: #333;
       font-size: 2em;
       margin-bottom: 20px;
+      color: #333;
     }
-    /* Stili per il pannello a schede */
+    
+    /* Pannello a schede */
     .tab {
-      overflow: hidden;
+      text-align: center;
       border-bottom: 1px solid #ccc;
       margin-bottom: 20px;
     }
     .tab button {
-      background-color: inherit;
-      float: left;
+      background: none;
       border: none;
       outline: none;
       cursor: pointer;
-      padding: 14px 16px;
-      transition: 0.3s;
+      padding: 10px 20px;
       font-size: 1em;
+      margin: 0 5px;
     }
     .tab button:hover {
       background-color: #ddd;
     }
     .tab button.active {
-      background-color: #ccc;
+      border-bottom: 3px solid #007BFF;
       font-weight: bold;
     }
     .tab-content {
       display: none;
     }
-    /* Stili per i blocchi di offerta */
+    
+    /* Blocchi di offerta */
     .offer-block {
-      border: 1px solid #ccc;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
       padding: 15px;
-      margin-bottom: 15px;
       border-radius: 5px;
-      background-color: #f9f9f9;
+      margin-bottom: 15px;
     }
     .offer-block h2 {
       background-color: #007BFF;
       color: #fff;
       padding: 10px;
-      border-radius: 4px;
-      margin: -15px -15px 10px -15px;
+      margin: -15px -15px 10px;
+      border-radius: 3px;
       text-align: center;
       font-size: 1.5em;
     }
@@ -81,7 +90,6 @@
     label {
       display: block;
       margin-top: 10px;
-      color: #333;
       font-size: 1em;
     }
     input[type="number"],
@@ -101,46 +109,46 @@
       text-align: center;
       font-style: italic;
     }
+    
+    /* Pulsante di calcolo */
     button.calcBtn {
       width: 100%;
-      margin-top: 20px;
       padding: 15px;
+      margin-top: 20px;
       background-color: #28a745;
       color: #fff;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
       cursor: pointer;
       font-size: 1.2em;
     }
     button.calcBtn:hover {
       background-color: #218838;
     }
+    
+    /* Contenitori dei risultati – dimensioni uguali per desktop e mobile */
     .result-container {
       margin-top: 20px;
-      text-align: center;
       padding: 20px;
       background-color: #e8f5e9;
       border: 2px solid #c8e6c9;
-      border-radius: 8px;
+      border-radius: 5px;
+      text-align: center;
     }
-    .result-container .result {
-      font-size: 1.8em;
-      font-weight: bold;
-      color: #2e7d32;
-    }
-    .result-container .message {
-      margin-top: 10px;
-      font-size: 1em;
-      color: #555;
-    }
-    /* Nuove classi per il pannello Copertura Spese */
+    /* Prima riga: Totale a 24px bold */
+    .result-container .result,
     .expenses-total {
-      font-size: 1.8em;
+      font-size: 24px;
       font-weight: bold;
       color: #2e7d32;
     }
-    .expenses-options, .expenses-summary, .expenses-note, .expenses-encouragement {
-      font-size: 0.9em;  /* circa il 50% della dimensione del totale */
+    /* Altre righe: 14px */
+    .result-container .message,
+    .expenses-options,
+    .expenses-summary,
+    .expenses-note,
+    .expenses-encouragement {
+      font-size: 14px;
       margin-top: 10px;
       color: #555;
     }
@@ -204,13 +212,13 @@
           <input type="number" id="vas_complesso" min="0" placeholder="">
         </label>
         <p class="note">
-          È possibile guadagnare ulteriori 2€ per ogni cliente segnalato per VAS COMPLESSO, che diventano 5€ se le segnalazioni sono ≥ 10. Non è necessario che il cliente segnalato sia in fornitura A2A. (vedi lettera di gara o contatta il tuo referente)
+          È possibile guadagnare ulteriori 2€ per ogni cliente segnalato per VAS COMPLESSO, che diventano 5€ se le segnalazioni sono ≥ 10. Non è necessario che il cliente sia in fornitura A2A.
         </p>
       </div>
       
       <!-- Nota informativa -->
       <p class="note">
-        Il totale è calcolato tenendo conto che il 100% dei contratti inseriti sono con RID e bolletta web.
+        Il totale è calcolato tenendo conto che il 100% dei contratti inseriti è con RID e bolletta web.
       </p>
       
       <!-- Pulsante di calcolo provvigioni -->
@@ -252,13 +260,11 @@
       
       <!-- Risultato copertura spese -->
       <div class="result-container" id="expensesResultContainer" style="display:none;">
-        <!-- Totale spese (font grande) -->
         <div id="expensesResult" class="expenses-total"></div>
-        <!-- I 3 scenari (font 50% più piccolo) -->
-        <div class="expenses-options" id="expensesOptions"></div>
-        <div class="expenses-summary" id="expensesSummary"></div>
-        <div class="expenses-note" id="expensesNote"></div>
-        <div class="expenses-encouragement" id="expensesEncouragement"></div>
+        <div id="expensesOptions" class="expenses-options"></div>
+        <div id="expensesSummary" class="expenses-summary"></div>
+        <div id="expensesNote" class="expenses-note"></div>
+        <div id="expensesEncouragement" class="expenses-encouragement"></div>
       </div>
     </div>
     
@@ -375,3 +381,4 @@
   </script>
 </body>
 </html>
+

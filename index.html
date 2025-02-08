@@ -2,36 +2,63 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <!-- Meta tag per garantire il corretto scaling sui dispositivi mobili -->
+  <!-- Per la visualizzazione mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calcolatore Provvigioni - Mobile Friendly</title>
+  <title>Calcolatore Provvigioni & Copertura Spese</title>
   <style>
-    /* Stili generali per una visualizzazione ottimale su smartphone */
+    /* Stili generali */
     body {
       font-family: Arial, sans-serif;
       background-color: #f7f7f7;
       margin: 0;
       padding: 10px;
       font-size: 16px;
-      line-height: 1.4;
+      line-height: 1.5;
     }
     .container {
-      max-width: 100%;
-      margin: auto;
+      max-width: 800px;
+      margin: 20px auto;
       background: #fff;
-      padding: 15px;
+      padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     h1 {
       text-align: center;
       color: #333;
-      font-size: 1.8em;
-      margin: 0.5em 0;
+      font-size: 2em;
+      margin-bottom: 20px;
     }
+    /* Stili per il pannello a schede */
+    .tab {
+      overflow: hidden;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+      font-size: 1em;
+    }
+    .tab button:hover {
+      background-color: #ddd;
+    }
+    .tab button.active {
+      background-color: #ccc;
+      font-weight: bold;
+    }
+    .tab-content {
+      display: none;
+    }
+    /* Stili per i blocchi di offerta */
     .offer-block {
       border: 1px solid #ccc;
-      padding: 10px;
+      padding: 15px;
       margin-bottom: 15px;
       border-radius: 5px;
       background-color: #f9f9f9;
@@ -39,11 +66,17 @@
     .offer-block h2 {
       background-color: #007BFF;
       color: #fff;
-      padding: 8px;
+      padding: 10px;
       border-radius: 4px;
-      margin: -10px -10px 10px -10px;
+      margin: -15px -15px 10px -15px;
       text-align: center;
-      font-size: 1.2em;
+      font-size: 1.5em;
+    }
+    .subcategory {
+      text-align: center;
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 10px;
     }
     label {
       display: block;
@@ -51,14 +84,15 @@
       color: #333;
       font-size: 1em;
     }
-    input[type="number"] {
+    input[type="number"],
+    input[type="text"] {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       margin-top: 5px;
       box-sizing: border-box;
       border: 1px solid #ccc;
       border-radius: 4px;
-      font-size: 1.2em;  /* Numeri leggibili */
+      font-size: 1.2em;
     }
     .note {
       margin-top: 15px;
@@ -67,10 +101,10 @@
       text-align: center;
       font-style: italic;
     }
-    button {
+    button.calcBtn {
       width: 100%;
       margin-top: 20px;
-      padding: 12px;
+      padding: 15px;
       background-color: #28a745;
       color: #fff;
       border: none;
@@ -78,112 +112,203 @@
       cursor: pointer;
       font-size: 1.2em;
     }
-    button:hover {
+    button.calcBtn:hover {
       background-color: #218838;
     }
-    .result {
+    .result-container {
       margin-top: 20px;
       text-align: center;
-      font-size: 1.2em;
+      padding: 20px;
+      background-color: #e8f5e9;
+      border: 2px solid #c8e6c9;
+      border-radius: 8px;
+    }
+    .result-container .result {
+      font-size: 1.8em;
       font-weight: bold;
-      color: #333;
+      color: #2e7d32;
+    }
+    .result-container .message {
+      margin-top: 10px;
+      font-size: 1em;
+      color: #555;
+    }
+    /* Nuove classi per il pannello Copertura Spese */
+    .expenses-total {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+    .expenses-options, .expenses-summary, .expenses-note, .expenses-encouragement {
+      font-size: 0.9em;  /* circa il 50% della dimensione del totale */
+      margin-top: 10px;
+      color: #555;
+    }
+    .expenses-encouragement {
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Calcolatore Provvigioni</h1>
+    <h1>Calcolatore Provvigioni & Copertura Spese</h1>
     
-    <!-- Blocco Residenziale -->
-    <div class="offer-block" id="residenzialeBlock">
-      <h2>RESIDENZIALE</h2>
-      <label>Numero di Contratti:
-        <input type="number" id="quantity_res" value="0" min="0">
-      </label>
+    <!-- Pannello a schede -->
+    <div class="tab">
+      <button class="tablinks active" onclick="openTab(event, 'commissionTab')">Provvigioni</button>
+      <button class="tablinks" onclick="openTab(event, 'expensesTab')">Copertura Spese</button>
     </div>
     
-    <!-- Blocco Business -->
-    <div class="offer-block" id="businessBlock">
-      <h2>BUSINESS</h2>
-      <label>Numero di Contratti:
-        <input type="number" id="quantity_bus" value="0" min="0">
-      </label>
-    </div>
-    
-    <!-- Blocco Plus Residenziale -->
-    <div class="offer-block" id="plusResBlock">
-      <h2>PLUS RESIDENZIALE</h2>
-      <label>Numero di Contratti:
-        <input type="number" id="quantity_plusRes" value="0" min="0">
-      </label>
-    </div>
-    
-    <!-- Blocco Plus Business -->
-    <div class="offer-block" id="plusBusBlock">
-      <h2>PLUS BUSINESS</h2>
-      <label>Numero di Contratti:
-        <input type="number" id="quantity_plusBus" value="0" min="0">
-      </label>
-    </div>
-    
-    <!-- Blocco VAS COMPLESSO -->
-    <div class="offer-block" id="vasComplessoBlock">
-      <h2>VAS COMPLESSO</h2>
-      <label>Numero di segnalazioni VAS COMPLESSO:
-        <input type="number" id="vas_complesso" value="0" min="0">
-      </label>
+    <!-- Scheda Provvigioni -->
+    <div id="commissionTab" class="tab-content" style="display:block;">
+      <!-- Blocco RESIDENZIALE -->
+      <div class="offer-block" id="residenzialeBlock">
+        <h2>RESIDENZIALE</h2>
+        <p class="subcategory">(Smart casa luce, Smart casa gas, Noi2)</p>
+        <label>Numero di Contratti:
+          <input type="number" id="quantity_res" min="0" placeholder="">
+        </label>
+      </div>
+      
+      <!-- Blocco BUSINESS -->
+      <div class="offer-block" id="businessBlock">
+        <h2>BUSINESS</h2>
+        <p class="subcategory">(Smart business luce, Smart business gas)</p>
+        <label>Numero di Contratti:
+          <input type="number" id="quantity_bus" min="0" placeholder="">
+        </label>
+      </div>
+      
+      <!-- Blocco PLUS RESIDENZIALE -->
+      <div class="offer-block" id="plusResBlock">
+        <h2>PLUS RESIDENZIALE</h2>
+        <p class="subcategory">(Smart casa luce Plus, Smart casa gas Plus)</p>
+        <label>Numero di Contratti:
+          <input type="number" id="quantity_plusRes" min="0" placeholder="">
+        </label>
+      </div>
+      
+      <!-- Blocco PLUS BUSINESS -->
+      <div class="offer-block" id="plusBusBlock">
+        <h2>PLUS BUSINESS</h2>
+        <p class="subcategory">(Smart business luce Plus, Smart business gas Plus)</p>
+        <label>Numero di Contratti:
+          <input type="number" id="quantity_plusBus" min="0" placeholder="">
+        </label>
+      </div>
+      
+      <!-- Blocco VAS COMPLESSO -->
+      <div class="offer-block" id="vasComplessoBlock">
+        <h2>VAS COMPLESSO</h2>
+        <label>Numero di segnalazioni VAS COMPLESSO:
+          <input type="number" id="vas_complesso" min="0" placeholder="">
+        </label>
+        <p class="note">
+          È possibile guadagnare ulteriori 2€ per ogni cliente segnalato per VAS COMPLESSO, che diventano 5€ se le segnalazioni sono ≥ 10. Non è necessario che il cliente segnalato sia in fornitura A2A. (vedi lettera di gara o contatta il tuo referente)
+        </p>
+      </div>
+      
+      <!-- Nota informativa -->
       <p class="note">
-        È possibile guadagnare ulteriori 2€ per ogni cliente segnalato per VAS COMPLESSO, che diventano 5€ nel caso in cui le segnalazioni siano superiori o uguali a 10. Non è necessario che il cliente segnalato per il VAS COMPLESSO sia un cliente in fornitura A2A. (vedi lettera di gara o contatta il tuo referente)
+        Il totale è calcolato tenendo conto che il 100% dei contratti inseriti sono con RID e bolletta web.
       </p>
+      
+      <!-- Pulsante di calcolo provvigioni -->
+      <button type="button" class="calcBtn" onclick="calculateTotal()">Calcola Totale Provvigioni</button>
+      
+      <!-- Risultato provvigioni -->
+      <div class="result-container" id="resultContainer" style="display:none;">
+        <div class="result" id="result">Totale Provvigione: 0€</div>
+        <div class="message" id="summary"></div>
+        <div class="message" id="encouragement"></div>
+        <div class="message" id="rulesMessage"></div>
+        <div class="message" id="reminder">Il conteggio tiene conto che il 100% dei contratti inseriti è con RID e bolletta web.</div>
+      </div>
     </div>
     
-    <!-- Nota informativa sui contratti -->
-    <p class="note">
-      Il totale è calcolato tenendo conto che tutti i contratti siano inseriti con RID e BOLLETTA WEB. In caso contrario ci sarà una decurtazione (vedi lettera di gara).
-    </p>
+    <!-- Scheda Copertura Spese -->
+    <div id="expensesTab" class="tab-content" style="display:none;">
+      <!-- Dati spese -->
+      <div class="offer-block">
+        <h2>Dettagli Spese</h2>
+        <label>Ragione Sociale:
+          <input type="text" id="ragioneSociale" placeholder="Inserisci ragione sociale">
+        </label>
+        <label>Costo Locale (€):
+          <input type="number" id="costoLocale" min="0" step="0.01" placeholder="">
+        </label>
+        <label>Costo Personale (€):
+          <input type="number" id="costoPersonale" min="0" step="0.01" placeholder="">
+        </label>
+        <label>Utenze (€):
+          <input type="number" id="utenze" min="0" step="0.01" placeholder="">
+        </label>
+        <label>Altro (€):
+          <input type="number" id="altroSpese" min="0" step="0.01" placeholder="">
+        </label>
+      </div>
+      <!-- Pulsante di calcolo spese -->
+      <button type="button" class="calcBtn" onclick="calculateExpenses()">Calcola Copertura Spese</button>
+      
+      <!-- Risultato copertura spese -->
+      <div class="result-container" id="expensesResultContainer" style="display:none;">
+        <!-- Totale spese (font grande) -->
+        <div id="expensesResult" class="expenses-total"></div>
+        <!-- I 3 scenari (font 50% più piccolo) -->
+        <div class="expenses-options" id="expensesOptions"></div>
+        <div class="expenses-summary" id="expensesSummary"></div>
+        <div class="expenses-note" id="expensesNote"></div>
+        <div class="expenses-encouragement" id="expensesEncouragement"></div>
+      </div>
+    </div>
     
-    <!-- Pulsante per il calcolo -->
-    <button type="button" onclick="calculateTotal()">Calcola Totale</button>
-    
-    <!-- Visualizzazione del risultato -->
-    <div class="result" id="result">Totale Provvigione: 0€</div>
   </div>
   
   <script>
+    // Funzione per il cambio di scheda
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tab-content");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+    
+    // Calcolo delle provvigioni (con regole di gara)
     function calculateTotal() {
-      // Legge i numeri di contratti per ciascuna tipologia
       var quantityRes = parseInt(document.getElementById("quantity_res").value) || 0;
       var quantityBus = parseInt(document.getElementById("quantity_bus").value) || 0;
       var quantityPlusRes = parseInt(document.getElementById("quantity_plusRes").value) || 0;
       var quantityPlusBus = parseInt(document.getElementById("quantity_plusBus").value) || 0;
-      
-      // Legge il numero di segnalazioni VAS COMPLESSO
       var vasComplessoCount = parseInt(document.getElementById("vas_complesso").value) || 0;
       
-      // Totali dei contratti e dei contratti PLUS
       var totalContracts = quantityRes + quantityBus + quantityPlusRes + quantityPlusBus;
       var totalPlusContracts = quantityPlusRes + quantityPlusBus;
       
-      // Commissioni base (valori derivati dalle tabelle)
+      // Commissioni base
       var baseRes = 62;       // Residenziale: 30+10+10+10+2
       var baseBus = 92;       // Business: 60+10+10+10+2
       var basePlusRes = 117;  // Plus Residenziale: 55+20+10+30+2
       var basePlusBus = 147;  // Plus Business: 85+20+10+30+2
       
-      // Se il totale dei contratti PLUS è ≥ 50, aggiunge 30€ per ciascun contratto PLUS
+      // Se il totale dei contratti PLUS è ≥ 50, aggiunge 30€
       if (totalPlusContracts >= 50) {
-        basePlusRes += 30;  // Diventa 147
-        basePlusBus += 30;  // Diventa 177
+        basePlusRes += 30;
+        basePlusBus += 30;
       }
       
-      // Calcola la commissione per ciascun blocco (base * numero di contratti)
       var commissionRes = baseRes * quantityRes;
       var commissionBus = baseBus * quantityBus;
       var commissionPlusRes = basePlusRes * quantityPlusRes;
       var commissionPlusBus = basePlusBus * quantityPlusBus;
       
-      // Se il numero totale dei contratti è inferiore a 6, applica le penalità:
-      // 10€ per ciascun contratto RESIDENZIALE e BUSINESS, 30€ per ciascun contratto PLUS
+      // Penalità se il totale dei contratti è inferiore a 6:
       if (totalContracts < 6) {
         commissionRes -= 10 * quantityRes;
         commissionBus -= 10 * quantityBus;
@@ -191,15 +316,62 @@
         commissionPlusBus -= 30 * quantityPlusBus;
       }
       
-      // Calcola il bonus per VAS COMPLESSO:
-      // 2€ per segnalazione se il numero di segnalazioni è < 10, altrimenti 5€ per segnalazione
+      // Bonus per VAS COMPLESSO
       var bonusVAS = (vasComplessoCount >= 10) ? vasComplessoCount * 5 : vasComplessoCount * 2;
       
       var totalCommission = commissionRes + commissionBus + commissionPlusRes + commissionPlusBus + bonusVAS;
       
+      // Riepilogo contratti e messaggi
+      var summaryText = "Riepilogo contratti: Residenziale: " + quantityRes +
+                        ", Business: " + quantityBus +
+                        ", Plus Res.: " + quantityPlusRes +
+                        ", Plus Bus.: " + quantityPlusBus;
+      var encouragementText = "Aumenta la percentuale di offerte PLUS per guadagnare di più!";
+      var rulesText = "Regole di gara: se il totale dei contratti è inferiore a 6, sono applicate penalità (10€ per contratto RESIDENZIALE/BUSINESS, 30€ per contratto PLUS); se il totale dei contratti PLUS è ≥ 50, viene aggiunto un bonus di 30€ per ciascun contratto PLUS.";
+      
       document.getElementById("result").innerHTML = "Totale Provvigione: " + totalCommission.toFixed(2) + "€";
+      document.getElementById("summary").innerHTML = summaryText;
+      document.getElementById("encouragement").innerHTML = encouragementText;
+      document.getElementById("rulesMessage").innerHTML = rulesText;
+      document.getElementById("resultContainer").style.display = "block";
+    }
+    
+    // Calcolo della copertura spese
+    function calculateExpenses() {
+      var ragioneSociale = document.getElementById("ragioneSociale").value || "L'azienda";
+      var costoLocale = parseFloat(document.getElementById("costoLocale").value) || 0;
+      var costoPersonale = parseFloat(document.getElementById("costoPersonale").value) || 0;
+      var utenze = parseFloat(document.getElementById("utenze").value) || 0;
+      var altro = parseFloat(document.getElementById("altroSpese").value) || 0;
+      
+      var totalExpense = costoLocale + costoPersonale + utenze + altro;
+      
+      // Calcoliamo i 3 scenari:
+      // Scenario 1: 100% PLUS (117 € per contratto)
+      // Scenario 2: 50% PLUS (89,50 € per contratto)
+      // Scenario 3: 0% PLUS (62 € per contratto)
+      var scenario1 = Math.ceil(totalExpense / 117);
+      var scenario2 = Math.ceil(totalExpense / 89.5);
+      var scenario3 = Math.ceil(totalExpense / 62);
+      
+      var revenue1 = scenario1 * 117;
+      var revenue2 = scenario2 * 89.5;
+      var revenue3 = scenario3 * 62;
+      
+      var resultHTML = "<div class='expenses-total'>Per coprire un totale spese di " + totalExpense.toFixed(2) + "€ sono necessari:</div>" +
+                       "<div class='expenses-options'>" +
+                         "- " + scenario1 + " contratti (100% offerte PLUS) generando " + revenue1.toFixed(2) + "€ totali<br>" +
+                         "- " + scenario2 + " contratti (50% offerte PLUS) generando " + revenue2.toFixed(2) + "€ totali<br>" +
+                         "- " + scenario3 + " contratti (0% offerte PLUS) generando " + revenue3.toFixed(2) + "€ totali" +
+                       "</div>" +
+                       "<div class='expenses-summary'>Per " + ragioneSociale + ", il piano spese suggerito è:</div>" +
+                       "<div class='expenses-note'>Ricorda: il piano spese consigliato è quello con il 100% di offerte PLUS (residenziali).<br>" +
+                       "Se si attivano anche offerte BUSINESS, ogni contratto vale ulteriori 30€ in più, arrivando fino a 147€ per contratto.</div>" +
+                       "<div class='expenses-encouragement'>Buone vendite</div>";
+      
+      document.getElementById("expensesResult").innerHTML = resultHTML;
+      document.getElementById("expensesResultContainer").style.display = "block";
     }
   </script>
 </body>
 </html>
-
